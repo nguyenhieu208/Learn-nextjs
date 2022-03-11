@@ -1,4 +1,5 @@
 import { GetStaticProps, GetStaticPropsContext } from 'next';
+import Link from 'next/link';
 import React from 'react';
 
 export interface PostListPageProps {
@@ -11,7 +12,13 @@ export default function PostListPage ({posts}: PostListPageProps) {
       <h1>Post List page</h1>
 
       <ul>
-        {posts.map(post => <li key={post.id}>{post.title}</li>)}
+        {posts.map(post => (
+          <li key={post.id}>
+            <Link href={`/posts/${post.id}`}>
+              <a>{post.title}</a>
+            </Link>
+          </li>
+        ))}
       </ul>
     </div>
   );
@@ -22,15 +29,15 @@ export const getStaticProps: GetStaticProps<PostListPageProps> = async (context:
   // server side
   // builde-time 
 
-  console.log('static prop');
-  const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+  // console.log('static prop');
+  const response = await fetch('https://js-post-api.herokuapp.com/api/posts?_page=1');
   const data = await response.json();
 
-  console.log(data);
+  // console.log(data.slice(1, 3));
 
   return {
     props: {
-      posts: data.map((item: any) => ({ id: item.id, title: item.title }))
+      posts: data.data.map((item: any) => ({ id: item.id, title: item.title }))
     }
   }
 }
